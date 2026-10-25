@@ -160,7 +160,9 @@ textarea:focus,input:focus{outline:2px solid #0d1b2e;outline-offset:1px}
   function tipoDe(el) {
     const t = el.tagName.toLowerCase();
     if (t === 'img' || t === 'picture' || t === 'video') return 'Imagem';
-    if (/^h[1-6]$/.test(t)) return 'Título';
+    if (/^h[1-6]$/.test(t) || el.closest('h1,h2,h3,h4,h5,h6')) return 'Título';
+    if (!/^(a|button)$/.test(t) && el.closest('button,[role=button]')) return 'Botão';
+    if (!/^(a|button)$/.test(t) && el.closest('a')) return 'Link';
     if (t === 'p') return 'Texto';
     if (t === 'a') return 'Link';
     if (t === 'button' || el.getAttribute('role') === 'button') return 'Botão';
