@@ -294,7 +294,8 @@ details p{padding:0 0 20px;color:#3A4A60;max-width:640px}
   .faq-sec{grid-template-columns:1fr;gap:8px;padding:40px 0}
   summary{font-size:16px;padding:16px 0}
   .ftr-in{grid-template-columns:1fr 1fr;gap:24px;padding:32px 20px}.ftr-in>div:first-child{grid-column:1/-1}
-  .pdp{grid-template-columns:1fr;gap:0}
+  .pdp,.pdp[style]{grid-template-columns:minmax(0,1fr)!important;gap:0}
+  .pdp>*{min-width:0}
   .wrap.pdp-wrap{padding:0}
   .gal{position:static;display:block}
   .thumbs{display:none}
