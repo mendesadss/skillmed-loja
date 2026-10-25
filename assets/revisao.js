@@ -144,6 +144,17 @@ textarea:focus,input:focus{outline:2px solid #0d1b2e;outline-offset:1px}
     }
     return el;
   }
+  // Camadas transparentes (link do banner, overlay) cobrem títulos e fotos: entre tudo que está sob o dedo,
+  // vale o primeiro elemento com texto próprio ou imagem.
+  const temTextoProprio = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+  const SIGNIFICATIVO = /^(IMG|VIDEO|PICTURE|H[1-6]|P|A|BUTTON|LI|LABEL|INPUT|SELECT|TEXTAREA|FIGCAPTION|BLOCKQUOTE|TD|TH|SPAN|B|STRONG|SMALL|EM)$/;
+  function sobOPonto(x, y, fallback) {
+    for (const el of document.elementsFromPoint(x, y)) {
+      if (dentroDaUi(el) || el === document.body || el === document.documentElement) continue;
+      if (/^(IMG|VIDEO|PICTURE)$/.test(el.tagName) || (SIGNIFICATIVO.test(el.tagName) && temTextoProprio(el))) return escolher(el);
+    }
+    return escolher(fallback);
+  }
   const dentroDaUi = (el) => el === host || (el && el.closest && el.closest('[data-skm-rev]'));
 
   function tipoDe(el) {
@@ -191,12 +202,12 @@ textarea:focus,input:focus{outline:2px solid #0d1b2e;outline-offset:1px}
   document.addEventListener('click', (e) => {
     if (!canetaOn || dentroDaUi(e.target)) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    abrirForm(escolher(e.target));
+    abrirForm(e.clientX || e.clientY ? sobOPonto(e.clientX, e.clientY, e.target) : escolher(e.target));
   }, true);
   document.addEventListener('submit', (e) => { if (canetaOn) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
   document.addEventListener('pointermove', (e) => {
     if (!canetaOn || alvo || e.pointerType !== 'mouse' || dentroDaUi(e.target)) return;
-    realce(escolher(e.target));
+    realce(sobOPonto(e.clientX, e.clientY, e.target));
   }, true);
 
   // ---------- formulário ----------
