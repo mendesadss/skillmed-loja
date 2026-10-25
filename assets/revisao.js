@@ -291,7 +291,8 @@ textarea:focus,input:focus{outline:2px solid #0d1b2e;outline-offset:1px}
     if (!texto && !arquivos.length) { msg('Escreva o que você quer mudar ou anexe uma foto.', 'erro'); $('[data-pedido]').focus(); return; }
     enviando = true; const bt = $('[data-salvar]'); bt.disabled = true;
     try {
-      const el = alvo, b = el.getBoundingClientRect();
+      // Posição lida junto com a rolagem: o dono pode rolar a página enquanto a mídia sobe.
+      const el = alvo, b = el.getBoundingClientRect(), sx = scrollX, sy = scrollY;
       msg('Tirando o print do trecho…');
       $('[data-form]').style.visibility = 'hidden';
       const print = await tirarPrint(el);
@@ -304,7 +305,7 @@ textarea:focus,input:focus{outline:2px solid #0d1b2e;outline-offset:1px}
         body: JSON.stringify({
           versao: VERSAO, pagina: paginaAtual(), url: location.href.replace(/([?&])revisao=1&?/, '$1').replace(/[?&]$/, ''),
           revisor: { id: revisor, nome },
-          elemento: { seletor: seletor(el), tag: el.tagName.toLowerCase(), texto: (el.innerText || el.getAttribute('alt') || '').trim().slice(0, 1500), imagem: imagemDe(el), caixa: { x: Math.round(b.left + scrollX), y: Math.round(b.top + scrollY), w: Math.round(b.width), h: Math.round(b.height) } },
+          elemento: { seletor: seletor(el), tag: el.tagName.toLowerCase(), texto: (el.innerText || el.getAttribute('alt') || '').trim().slice(0, 1500), imagem: imagemDe(el), caixa: { x: Math.round(b.left + sx), y: Math.round(b.top + sy), w: Math.round(b.width), h: Math.round(b.height) } },
           dispositivo: { largura: innerWidth, altura: innerHeight, celular: celular(), navegador: navigator.userAgent },
           pedido: texto, print, midia,
         }),
